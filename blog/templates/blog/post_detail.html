@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<div class="container my-5">
+    <div class="bg-body-tertiary p-5 rounded">
+        <div class="col-sm-8 py-5 mx-auto text-center">
+            {% if post.image %}
+            <img src="{{ post.image.url }}" alt="Фотка">
+            {% endif %}
+            <h1 class="display-9 fw-normal">Title :</h1>
+            <h3>- {{post.title}}</h3>
+            <div class="empty-space" style="height: 50px; width: 100px;"></div>
+            <h1 class="display-9 fw-normal">Content :</h1>
+            <h3>- {{post.content}}</h3>
+            <div class="empty-space" style="height: 50px; width: 100px;"></div>
+            <hr style="color: rgb(233, 229, 229); height: 5px; width: 800px">
+                <div class="footer text-center">
+                    <h6>Author - {{post.author}}</h6>
+                    <h6>Date - {{post.date_posted}}</h6>
+                </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
