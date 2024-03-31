@@ -2,6 +2,33 @@
 
 {% block content %}
 {% for post in all_posts %}
-        <li><a href="{% url 'blog:post_detail' pk=post.pk %}">{{ post.title }}</a></li>
-        {% endfor %}
+  {% if forloop.counter0|divisibleby:4 %}
+    <div class="row">
+  {% endif %}
+  
+  <div class="col">
+    <div class="card mt-4" style="width: 18rem;" >
+      {% if post.image %}
+        <img src="{{ post.image.url }}" class="card-img-top center-image" alt="photo" style="height: 100px; width: 135px;">
+      {% endif %}
+      <div class="card-body">
+        <hr style="height: 5px; width: 250px; color: rgb(233, 229, 229);">
+        <h5 class="card-title">{{ post.title }}</h5>
+        <hr style="height: 5px; width: 250px; color: rgb(233, 229, 229);">
+        <p class="card-text">{{ post.content}}</p>
+        <a href="{% url 'blog:post_detail' pk=post.pk %}" class="btn btn-primary">
+                Info
+                <img src="/static/images/eye.svg" width="15" />    
+        </a>
+      </div>
+    </div>
+  </div>
+
+  {% if forloop.last or forloop.counter0|add:1|divisibleby:4 %}
+    </div>
+  {% endif %}
+{% endfor %}
+
+
+
 {% endblock %}
