@@ -16,7 +16,8 @@
             <div class="empty-space" style="height: 10px; width: 30px;"></div>
             <hr style="color: rgb(233, 229, 229); height: 5px; width: 800px">
                 <div class="footer text-center">
-                    <h6>Author - {{post.author}}</h6>
+                    <!-- <h6>Author - {{post.author}}</h6> -->
+                    <h6>Автор: <a href="{% url 'members:profile' username=post.author.username%}">{{ post.author.username }}</a></h6>
                     <h6>Date - {{post.date_posted}}</h6>
                 </div>
         </div>

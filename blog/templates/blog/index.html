@@ -1,11 +1,16 @@
 {% extends "base.html" %}
 
 {% block content %}
+<h1>blog</h1>
+
+<a href="{% url 'blog:create_post' %}" class="btn btn-primary">Create</a>
+
+
 {% for post in all_posts %}
   {% if forloop.counter0|divisibleby:4 %}
     <div class="row">
   {% endif %}
-  
+
   <div class="col">
     <div class="card mt-4" style="width: 18rem;" >
       {% if post.image %}
