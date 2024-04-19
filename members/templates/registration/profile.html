@@ -4,6 +4,9 @@
 
 <div class="mt-4 rounded-3 p-4">
     <div class="row g-4">
+      <div class="col-12 rounded-6 shadow-sm" style="height: 200px; overflow: hidden;">
+        <img src="https://yt3.googleusercontent.com/hfS2AKf-gZ_outoofr7jbz_j2WyzZ4JXT79sreCFhPOD9EY58zF052sUt-M9R3T6OsUL4FtA7w=w2276-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj" alt="Avatar" class="img-fluid  object-fit-cover" style="width: 100%;">
+    </div>
         <div class="col-12 col-md-4 text-center">
           <div class=" bg-body-tertiary rounded-3  shadow-sm p-4">
             {% if user_profile.profile.avatar %}
@@ -12,17 +15,33 @@
             <p>No avatar</p>
             {% endif %}
             <h1>{{ user_profile.username }}</h1>
+            <h1>{{ user_profile.bio }}</h1>
             {% if user_profile == user %}
               <p><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">Edit Profile</button></p>
             {% endif %}
           </div>
         </div>
         <div class="col-8">
-            <div class=" bg-body-tertiary rounded-3  shadow-sm p-5">
-              <h1>Profile</h1>
-              <p>Date of Birth: {{ user_profile.profile.date_of_birth }}</p>
-              <p>Email: {{ user_profile.email }}</p>
+          <div class="bg-body-tertiary rounded-3 shadow-sm p-5">
+            <h1>Profile</h1>
+            <p>Date of Birth: {{ user_profile.profile.date_of_birth }}</p>
+            <p>Email: {{ user_profile.email }}</p>
+            <div class="row">
+                {% if user_profile.profile.tiktokurl %}
+                <div class="col-auto">
+                    <a href="{{ user_profile.profile.tiktokurl }}"><i class="fab fa-tiktok"></i></a>
+                </div>
+                {% endif %}
+                {% if user_profile.profile.youtubeurl %}
+                <div class="col-auto">
+                    <a href="{{ user_profile.profile.youtubeurl }}"><i class="fab fa-youtube"></i></a>
+                </div>
+                {% endif %}
+                <div class="col-auto">
+                    <a href="http://google.com"><i class="fab fa-google"></i></a>
+                </div>
             </div>
+        </div>
             
         </div>         
     </div>

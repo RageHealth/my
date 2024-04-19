@@ -5,6 +5,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
 from .models import Profile
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
+import datetime
 
 class UserLoginForm(AuthenticationForm):
     username = forms.CharField(label="Username", max_length=30,
@@ -31,7 +34,26 @@ class UserRegistrationForm(UserCreationForm):
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['avatar', 'date_of_birth']
-        widgets = {
-            'date_of_birth': forms.DateInput(attrs={'type': 'date'})
+        fields = ['avatar', 'date_of_birth', 'bio', 'tiktokurl', 'youtubeurl']
+        labels = {
+            'avatar': 'Выберите аватар',
+            'date_of_birth': 'Дата рождения',
+            'bio': 'О себе',
+            'tiktokurl': 'URL TikTok',
+            'youtubeurl': 'URL YouTube'
+            # Add labels for other fields as needed
         }
+        widgets = {
+            'avatar': forms.FileInput(attrs={'class': 'form-control-file'}),
+            'date_of_birth': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'bio': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'tiktokurl': forms.URLInput(attrs={'class': 'form-control'}),
+            'youtubeurl': forms.URLInput(attrs={'class': 'form-control'})
+            # Add more fields with Bootstrap styles as needed
+        }
+
+    def clean_date_of_birth(self):
+        dob = self.cleaned_data['date_of_birth']
+        if dob > datetime.date.today():
+            raise ValidationError(_("Date of birth cannot be in the future"))
+        return dob

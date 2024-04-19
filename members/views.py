@@ -44,7 +44,10 @@ def user_profile(request, username):
         if form.is_valid():
             if user_profile != request.user:
                 return redirect('main:index')
+            print(form.cleaned_data)
             form.save()
+        else:
+            print(form.errors)
     else:
         form = ProfileForm(instance=user_profile.profile)
     
