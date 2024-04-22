@@ -4,6 +4,8 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
+from PIL import Image
+
 from .models import Profile
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
@@ -34,16 +36,18 @@ class UserRegistrationForm(UserCreationForm):
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['avatar', 'date_of_birth', 'bio', 'tiktokurl', 'youtubeurl']
+        fields = ['avatar', 'date_of_birth', 'bio', 'tiktokurl', 'youtubeurl', 'shapka']
         labels = {
             'avatar': 'Выберите аватар',
             'date_of_birth': 'Дата рождения',
             'bio': 'О себе',
             'tiktokurl': 'URL TikTok',
-            'youtubeurl': 'URL YouTube'
+            'youtubeurl': 'URL YouTube',
+            'shapka': 'Добавьте фотографию с розширением  2048 × 1152',
             # Add labels for other fields as needed
         }
         widgets = {
+            'shapka': forms.FileInput(attrs={'class': 'form-control-file'}),
             'avatar': forms.FileInput(attrs={'class': 'form-control-file'}),
             'date_of_birth': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'bio': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
@@ -51,6 +55,13 @@ class ProfileForm(forms.ModelForm):
             'youtubeurl': forms.URLInput(attrs={'class': 'form-control'})
             # Add more fields with Bootstrap styles as needed
         }
+
+    def clean_shapka(self):
+        shapka = self.cleaned_data.get('shapka', False)
+        if shapka:
+            if shapka.size > 10 * 1024 * 1024:
+                raise forms.ValidationError("Фото шапки не должно быть больше 10 МБ")
+        return shapka
 
     def clean_date_of_birth(self):
         dob = self.cleaned_data['date_of_birth']

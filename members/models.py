@@ -10,6 +10,7 @@ class Profile(models.Model):
     tiktokurl = models.URLField(blank=True)
     youtubeurl = models.URLField(blank=True)
     avatar = models.ImageField(upload_to='avatars/', blank=True)
+    shapka = models.ImageField(upload_to='shapki/', blank=True)
 
     def __str__(self):
         return self.user.username
