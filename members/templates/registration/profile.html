@@ -1,147 +1,224 @@
-{% extends "base.html" %}
-
-{% block content %}
+{% extends "base.html" %} {% load crispy_forms_tags %} {% block content %}
 
 <div class="mt-4 rounded-3 p-4">
-    <div class="row g-4">
-      <div id="shapkaimage" class="col-12 rounded-6 shadow-sm position-relative" style="height: 200px; overflow: hidden;">
-        {% if user_profile.profile.shapka %}
-        <img   src="{{ user_profile.profile.shapka.url }}" alt="shapka" class="img-fluid object-fit-cover" style="width: 100%; height: 200px;">
-        {% else %}
-        <div class="img-fluid object-fit-cover" style="width: 100%; height: 200px; background: linear-gradient(to right, #23252b, #4f5b62);"></div>
-        {% endif %}
-        {% if user_profile == user %}
-        <div id="editshapka" class="position-absolute top-50 start-50 translate-middle text-center" style="opacity: 0;">
-          <button  type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editShapkaModal" >Edit Shapka</button>
-        {% endif %}
-        </div>
-      <script>
-        const shapkaImage = document.querySelector('#shapkaimage');
-        const editButton = document.querySelector('#editshapka');
-        shapkaImage.addEventListener('mouseover', () => {
-          editButton.style.opacity = 1;
-        });
-        shapkaImage.addEventListener('mouseout', () => {
-          editButton.style.opacity = 0;
-        });
-      </script>
+  <div class="row g-4">
+    <div
+      id="shapkaimage"
+      class="col-12 rounded-6 shadow-sm position-relative"
+      style="height: 200px; overflow: hidden"
+    >
+      {% if user_profile.profile.shapka %}
+      <img
+        src="{{ user_profile.profile.shapka.url }}"
+        alt="shapka"
+        class="img-fluid object-fit-cover"
+        style="width: 100%; height: 200px"
+      />
+      {% else %}
+      <div
+        class="img-fluid object-fit-cover"
+        style="
+          width: 100%;
+          height: 200px;
+          background: linear-gradient(to right, #23252b, #4f5b62);
+        "
+      ></div>
+      {% endif %} {% if user_profile == user %}
+      <div
+        id="editshapka"
+        class="position-absolute top-50 start-50 translate-middle text-center"
+        style="opacity: 0"
+      >
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#editShapkaModal"
+        >
+          Edit Shapka
+        </button>
       </div>
+      {% endif %}
+    </div>
 
-        <div class="col-12 col-md-4 text-center">
-          <div class=" bg-body-tertiary rounded-3  shadow-sm p-4">
-            {% if user_profile.profile.avatar %}
-            <img src="{{ user_profile.profile.avatar.url }}" alt="Avatar" class="avatar  rounded-6 shadow-sm" style="width: 200px; height: 200px;">
-            {% else %}
-            <p>No avatar</p>
-            {% endif %}
-            <h1>{{ user_profile.username }}</h1>
-            <h1>{{ user_profile.bio }}</h1>
-            {% if user_profile == user %}
-              <p><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">Edit Profile</button></p>
-            {% endif %}
+    <div class="col-12 col-md-4 text-center">
+      <div class="bg-body-tertiary rounded-3 shadow-sm p-4">
+        {% if user_profile.profile.avatar %}
+        <img
+          src="{{ user_profile.profile.avatar.url }}"
+          alt="Avatar"
+          class="avatar rounded-6 shadow-sm"
+          style="width: 200px; height: 200px"
+        />
+        {% else %}
+        <p>No avatar</p>
+        {% endif %}
+        <h1>{{ user_profile.username }}</h1>
+      
+        <h5>Подписчики: {{podpisciki}}</h5>
+        <h5>Подписки: {{podpiski}}</h5>
+        {% if is_following %}
+        <a href="{% url 'members:follow' profile.id %} " class="btn btn-danger"
+          >UnFollow</a
+        >
+        {% else %}
+        <a href="{% url 'members:follow' profile.id %} " class="btn btn-primary"
+          >Follow</a
+        >
+        {% endif %}
+
+
+        
+
+        <h1>{{ user_profile.bio }}</h1>
+        {% if user_profile == user %}
+        <p>
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#editProfileModal"
+          >
+            Edit Profile
+          </button>
+        </p>
+        {% endif %}
+        <div class="bg-base-100 p-10 rounded-box">
+          <div class="grid grid-cols-3 gap-7">
+            
+            <h2 ><i class="fa-solid fa-user"></i> <u>Followers</u> <b>{{ user.username }}:</b></h2>
+              {% for follower in followers %}
+            <div class="rounded-3 w-5 h-5 m-auto">
+              <img class="rounded-5 w-5 h-5 m-auto" src="{{ follower.avatar.url }}" alt="foto" width="70px">
+            </div>
+            {% endfor %}
+          <h2>👁️ <u>Following</u> <b>{{ user.username }}:</b></h2>
+            {% for follower in following %}
+            <div class="rounded-3 w-5 h-5 m-auto">
+              <img class="rounded-5 w-5 h-5 m-auto" src="{{ follower.avatar.url }}" alt="foto" width="70px">
+            </div>
+            {% endfor %}
+          </div>
+          </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-8">
+      <div class="bg-body-tertiary rounded-3 shadow-sm p-5">
+        <h1>Profile</h1>
+        <p>Date of Birth: {{ user_profile.profile.date_of_birth }}</p>
+        <p>Email: {{ user_profile.email }}</p>
+        <div class="row">
+          {% if user_profile.profile.tiktokurl %}
+          <div class="col-auto">
+            <a href="{{ user_profile.profile.tiktokurl }}"
+              ><i class="fab fa-tiktok"></i
+            ></a>
+          </div>
+          {% endif %} {% if user_profile.profile.youtubeurl %}
+          <div class="col-auto">
+            <a href="{{ user_profile.profile.youtubeurl }}"
+              ><i class="fab fa-youtube"></i
+            ></a>
+          </div>
+          {% endif %}
+          <div class="col-auto">
+            <a href="http://google.com"><i class="fab fa-google"></i></a>
           </div>
         </div>
-        <div class="col-8">
-          <div class="bg-body-tertiary rounded-3 shadow-sm p-5">
-            <h1>Profile</h1>
-            <p>Date of Birth: {{ user_profile.profile.date_of_birth }}</p>
-            <p>Email: {{ user_profile.email }}</p>
-            <div class="row">
-                {% if user_profile.profile.tiktokurl %}
-                <div class="col-auto">
-                    <a href="{{ user_profile.profile.tiktokurl }}"><i class="fab fa-tiktok"></i></a>
-                </div>
-                {% endif %}
-                {% if user_profile.profile.youtubeurl %}
-                <div class="col-auto">
-                    <a href="{{ user_profile.profile.youtubeurl }}"><i class="fab fa-youtube"></i></a>
-                </div>
-                {% endif %}
-                <div class="col-auto">
-                    <a href="http://google.com"><i class="fab fa-google"></i></a>
-                </div>
-            </div>
+      </div>
+      <h3>User Posts:</h3>
+      <h2>Количевство постов: {{kol}}</h2>
+      <a href="{% url 'blog:create_post' %}" class="btn btn-primary">Create</a>
+
+      <div class="row">
+        {% for post in user_posts %}
+        <div class="col-6 mb-2">
+          {% include 'blog/_include_blocks/block_card.html' %}
         </div>
-        <h3>User Posts:</h3>
-        <ul>
-            {% for post in post %}
-                <li>{{ post.content }}</li>
-            {% empty %}
-                <li>No posts yet.</li>
-            {% endfor %}
-        </ul>
-        </div>         
+        {% empty %}
+        <li>No posts yet.</li>
+        {% endfor %}
+      </div>
     </div>
+  </div>
 </div>
 
+
+
 {% if user_profile == user %}
-      <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="editProfileModalLabel">Редагувати профіль</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <form action="" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ form.as_p }}
 
-                <button type="submit" class="btn btn-primary mt-4">Зберегти</button>
-              </form>
-          </div>
-        </div>
+<div
+  class="modal fade"
+  id="editProfileModal"
+  tabindex="-1"
+  aria-labelledby="editProfileModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="editProfileModalLabel">
+          Редагувати профіль
+        </h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
       </div>
+      <div class="modal-body">
+        <form action="" method="post" enctype="multipart/form-data">
+          {% csrf_token %} {{ form|crispy }}
+          <button type="submit" class="btn btn-primary mt-4">Зберегти</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 {% endif %}
-    <!-- <h1>User Profile</h1>
-    <p>Username: {{ user.username }}</p>
-    <p>Date of Birth: {{ user.profile.date_of_birth }}</p> 
-    {% if user.profile.avatar %}
-        <img src="{{ user.profile.avatar.url }}" alt="Avatar" class="avatar  rounded-6 shadow-sm" style="width: 200px; height: 200px;">
-    {% else %}
-        <p>No avatar</p>
-    {% endif %}
-    <p><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">Edit Profile</button></p> -->
-
-    <!-- modal -->
-    <!-- <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        <button type="submit" class="btn btn-primary">Save</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div> -->
-    <!-- end modal -->
-
-
 
 <!-- Modal for edit shapka -->
-<div class="modal fade" id="editShapkaModal" tabindex="-1" aria-labelledby="editShapkaModalLabel" aria-hidden="true">
+<div
+  class="modal fade"
+  id="editShapkaModal"
+  tabindex="-1"
+  aria-labelledby="editShapkaModalLabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="editShapkaModalLabel">Edit Shapka</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
       </div>
       <div class="modal-body text-center">
         <form action="" method="post" enctype="multipart/form-data">
           {% csrf_token %}
-          <input type="file" name="shapka" class="form-control">
+          <input type="file" name="shapka" class="form-control" />
           <button type="submit" class="btn btn-primary mt-4">Save</button>
         </form>
       </div>
     </div>
   </div>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const shapkaImage = document.querySelector("#shapkaimage");
+    const editButton = document.querySelector("#editshapka");
+    shapkaImage.addEventListener("mouseover", () => {
+      editButton.style.opacity = 1;
+    });
+    shapkaImage.addEventListener("mouseout", () => {
+      editButton.style.opacity = 0;
+    });
+  });
+</script>
 
 {% endblock %}

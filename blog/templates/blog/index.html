@@ -1,39 +1,63 @@
-{% extends "base.html" %}
-
-{% block content %}
+{% extends "base.html" %} {% block content %}
 <h1>blog</h1>
+<h2>Количевство постов: {{kol}}</h2>
 
 <a href="{% url 'blog:create_post' %}" class="btn btn-primary">Create</a>
 
-
-{% for post in all_posts %}
-  {% if forloop.counter0|divisibleby:4 %}
-    <div class="row">
-  {% endif %}
-
-  <div class="col">
-    <div class="card mt-4" style="width: 18rem;" >
-      {% if post.image %}
-        <img src="{{ post.image.url }}" class="card-img-top center-image" alt="photo" style="height: 100px; width: 135px;">
-      {% endif %}
-      <div class="card-body">
-        <hr style="height: 5px; width: 250px; color: rgb(233, 229, 229);">
-        <h5 class="card-title">{{ post.title }}</h5>
-        <hr style="height: 5px; width: 250px; color: rgb(233, 229, 229);">
-        <p class="card-text">{{ post.content}}</p>
-        <a href="{% url 'blog:post_detail' pk=post.pk %}" class="btn btn-primary">
-                Info
-                <img src="/static/images/eye.svg" width="15" />    
-        </a>
-      </div>
+<div class="container">
+  <div class="row">
+    {% for post in all_posts %}
+    <div class="col-md-3 mb-4">
+      {% include 'blog/_include_blocks/block_card.html' %}
     </div>
+    {% endfor %}
   </div>
+</div>
 
-  {% if forloop.last or forloop.counter0|add:1|divisibleby:4 %}
-    </div>
+<ul class="pagination justify-content-center">
+  {% if all_posts.has_previous %}
+  <li class="page-item">
+    <a class="page-link" href="?page=1" aria-label="Первая">
+      <span aria-hidden="true">&laquo; Первая</span>
+    </a>
+  </li>
+  <li class="page-item">
+    <a
+      class="page-link"
+      href="?page={{ all_posts.previous_page_number }}"
+      aria-label="Предыдущая"
+    >
+      <span aria-hidden="true">&lsaquo; Предыдущая</span>
+    </a>
+  </li>
   {% endif %}
-{% endfor %}
 
+  <li class="page-item active" aria-current="page">
+    <span class="page-link"
+      >Страница {{ all_posts.number }} из {{ all_posts.paginator.num_pages}}
+    </span>
+  </li>
 
+  {% if all_posts.has_next %}
+  <li class="page-item">
+    <a
+      class="page-link"
+      href="?page={{ all_posts.next_page_number }}"
+      aria-label="Следующая"
+    >
+      <span aria-hidden="true">Следующая &rsaquo;</span>
+    </a>
+  </li>
+  <li class="page-item">
+    <a
+      class="page-link"
+      href="?page={{ all_posts.paginator.num_pages }}"
+      aria-label="Последняя"
+    >
+      <span aria-hidden="true">Последняя &raquo;</span>
+    </a>
+  </li>
+  {% endif %}
+</ul>
 
 {% endblock %}

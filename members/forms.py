@@ -3,6 +3,8 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit
 
 from PIL import Image
 
@@ -65,6 +67,14 @@ class ProfileForm(forms.ModelForm):
 
     def clean_date_of_birth(self):
         dob = self.cleaned_data['date_of_birth']
+        if not dob:
+            return self.cleaned_data['date_of_birth']
         if dob > datetime.date.today():
             raise ValidationError(_("Date of birth cannot be in the future"))
         return dob
+    
+
+class MyForm(forms.Form):
+    name = forms.CharField(label='Name')
+    email = forms.EmailField(label='Email')
+    

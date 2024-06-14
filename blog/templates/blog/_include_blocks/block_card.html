@@ -1,0 +1,45 @@
+{% load crispy_forms_tags %}
+
+<div class="card">
+  <a href="{% url 'blog:post_detail' post.id %}" class="text-decoration-none">
+    {% if post.image %}
+    <img src="{{ post.image.url }}" class="card-img-top" alt="..." />
+    {% else %}
+    <h1>Картинки нету</h1>
+    {% endif %}
+    <div class="card-body">
+      <h5 class="card-title">{{ post.title }}</h5>
+      <p class="card-text">{{ post.content }}</p>
+    </div>
+  </a>
+
+  <div>
+    <div class="card-footer">
+      <small class="text-muted">Автор: {{ post.author }}</small>
+      <small class="text-muted">{{ post.date_posted }}</small>
+      <p>
+        <span class="like-count"
+          ><i class="fa-solid fa-heart"></i> {{ post.num_likes }}</span
+        >
+        <span class="comment-count"
+          ><i class="fa-solid fa-message"></i> {{ post.comments.all.count}}
+        </span>
+      </p>
+
+      <br />
+
+      {% if post.author == user %}
+      <a
+        href="{% url 'blog:delete_post' post.id %}"
+        class="btn btn-danger"
+        style="width: 100px"
+        >Del</a
+      >
+      {% endif %} {% if post.author == user %}
+      <a href="{% url 'blog:edit_post' post.id %}" class="btn btn-primary"
+        >Edit</a
+      >
+      {% endif %}
+    </div>
+  </div>
+</div>
