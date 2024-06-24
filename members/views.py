@@ -4,8 +4,10 @@ from django.contrib.auth.models import User
 from .forms import UserLoginForm, MyForm, UserRegistrationForm, ProfileForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Profile
+from .models import Profile, Notification
 from blog.models import Post
+
+
 
 def user_login(request):
     if request.method == 'POST':
@@ -63,6 +65,7 @@ def profile_view(request, username):
         'podpisciki': podpisciki,
         'followers': user_profile.profile.get_followers(),
         'following': user_profile.profile.get_following(),
+
     })
 
 def logout_view(request):
@@ -87,3 +90,8 @@ def follow_view(request, pk):
     return redirect('members:profile', username=profile.user.username)
 
 
+def notification_view(request,pk):
+    notification = get_object_or_404(Notification, pk=pk)
+    notification.is_read = True
+    notification.save()
+    return redirect(notification.url)

@@ -6,6 +6,8 @@ from django.http import JsonResponse
 
 from .forms import PostForm, CommentForm
 
+from members.models import Notification
+
 
 
 def index(request):
@@ -61,6 +63,11 @@ def like_post(request, post_id):
     if request.method == 'POST':
         if request.user.is_authenticated:
             existing_like = Like.objects.filter(user=request.user, post=post)
+
+            if request.user != post.author:
+                print('notification')
+                Notification().add_like(post, request.user)
+            
             if not existing_like:
                 # Если лайка еще не было, создаем новый
                 Like.objects.create(user=request.user, post=post)
@@ -69,6 +76,8 @@ def like_post(request, post_id):
                 # Если лайк уже был поставлен, удаляем его
                 existing_like.delete()
                 return JsonResponse({'unliked': True})
+            
+
         else:
             return JsonResponse({'error': 'Пользователь не авторизован'}, status=401)
     else:

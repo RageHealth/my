@@ -1,6 +1,10 @@
+import profile
+import uuid
 from django.db import models
 from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404
+
+
 
 
 class Profile(models.Model):
@@ -41,12 +45,18 @@ class Notification(models.Model):
         ('comment', 'Comment'),
         ('follow', 'Follow'),
     )
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=True)
     notification_type = models.CharField(max_length=20, choices=NOTIFICATION_TYPE)
     profile = models.ForeignKey('auth.User', related_name='notification', on_delete=models.CASCADE)
     message = models.TextField()
     url = models.URLField(max_length=200, blank=True, null=True)
     is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
 
     def __str__(self):
         return self.notification_type
@@ -58,3 +68,28 @@ class Notification(models.Model):
             return 'comment'
         elif self.notification_type == 'follow':
             return 'user-friends'
+    
+    def add_like(self,post,author_like):
+        self.notification_type = 'like'
+        self.profile = post.author
+        self.message = '{} liked your post'.format(author_like.username)
+        self.url = '/posts/{}/'.format(post.pk)
+        self.save()
+
+    def add_comment(self,post,author_comment):
+        self.notification_type = 'comment'
+        self.profile = post.author
+        self.message = '{} commented your post'.format(author_comment.username)
+        self.url = '/posts/{}/'.format(post.pk)
+        self.save()
+
+    def add_follow(self,post,author_follow):
+        self.notification_type = 'follow'
+        self.profile = profile
+        self.message = '{} started following you'.format(author_follow.username)
+        self.url = '/posts/{}/'.format(author_follow.profile.pk)
+        self.save()
+
+    def read(self):
+        self.is_read = True
+        self.save()

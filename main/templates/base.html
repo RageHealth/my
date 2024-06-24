@@ -92,7 +92,7 @@
 
             <div class="dropdown">
               <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                  Notifications
+                <i class="fa-solid fa-bell"></i>
               </button>
               <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                   <li class="dropdown-item">
@@ -104,9 +104,12 @@
                   {% for notification in user.notification.all %}
                   <li class="dropdown-item">
                       <a href="{{ notification.url }}" class="d-flex justify-content-between">
-                          <span><i class="fas fa-bell"></i> {{ notification.message }}</span>
+                          <span>
+                            <i class="fas fa-{{ notification.get_icon }}"></i>
+                            <i class="rounded-3"></i> {{ notification.message }}
+                          </span>
                           {% if not notification.is_read %}
-                              <span class="badge badge-pill badge-primary">New</span>
+                              <span class="badge badge-pill badge-primary text-danger">New</span>
                           {% endif %}
                       </a>
                   </li>
